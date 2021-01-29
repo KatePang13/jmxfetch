@@ -62,6 +62,7 @@ public class Instance {
     private static final int MAX_RETURNED_METRICS = 350;
     private static final int DEFAULT_REFRESH_BEANS_PERIOD = 600;
     public static final String PROCESS_NAME_REGEX = "process_name_regex";
+    public static final String PID = "pid";
     public static final String JVM_DIRECT = "jvm_direct";
     public static final String ATTRIBUTE = "Attribute: ";
 
@@ -189,6 +190,8 @@ public class Instance {
         if (this.instanceName == null) {
             if (this.instanceMap.get(PROCESS_NAME_REGEX) != null) {
                 this.instanceName = this.checkName + "-" + this.instanceMap.get(PROCESS_NAME_REGEX);
+            } else if (this.instanceMap.get(PID) != null) {
+                this.instanceName = this.checkName + "-" + this.instanceMap.get(PID);
             } else if (this.instanceMap.get("host") != null) {
                 this.instanceName =
                         this.checkName
@@ -431,6 +434,8 @@ public class Instance {
             return "jvm_direct";
         } else if (this.instanceMap.get(PROCESS_NAME_REGEX) != null) {
             return "process_regex: `" + this.instanceMap.get(PROCESS_NAME_REGEX) + "`";
+        } else if (this.instanceMap.get(PID) != null) {
+            return "pid: `" + this.instanceMap.get(PID) + "`";
         } else if (this.instanceMap.get("name") != null) {
             return (String) this.instanceMap.get("name");
         } else if (this.instanceMap.get("jmx_url") != null) {

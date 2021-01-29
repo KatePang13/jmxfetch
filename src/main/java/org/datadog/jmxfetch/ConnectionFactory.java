@@ -11,6 +11,7 @@ import java.util.Map;
 @Slf4j
 public class ConnectionFactory {
     public static final String PROCESS_NAME_REGEX = "process_name_regex";
+    public static final String PID = "pid";
 
     /** Factory method to create connections, both remote and local to the target JVM. */
     public static Connection createConnection(Map<String, Object> connectionParams)
@@ -32,6 +33,18 @@ public class ConnectionFactory {
             }
             log.info("Connecting using Attach API");
             return new AttachApiConnection(connectionParams);
+        }
+
+        if(connectionParams.get(PID) != null) {
+            try {
+                Class.forName("com.sun.tools.attach.AttachNotSupportedException");
+            } catch (ClassNotFoundException e) {
+                throw new IOException(
+                        "Unable to find tools.jar."
+                                + " Are you using a JDK and did you set the path to tools.jar ?");
+            }
+            log.info("Connecting using Attach PID");
+            return new AttachPidConnection(connectionParams);
         }
 
         log.info("Connecting using JMX Remote");
